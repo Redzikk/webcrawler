@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import {
   getFirstParagraphFromHTML,
   getHeadingFromHTML,
+  getURLsFromHTML,
 } from "./extractPageContent";
 
 test("should get H1 from HTML basic", () => {
@@ -40,4 +41,30 @@ test("should return empty string if there isn't any html", () => {
   const inputBody = "";
   const result = getFirstParagraphFromHTML(inputBody);
   expect(result).toEqual("");
+});
+
+test("should return all urls in html", () => {
+  const inputBody = `<html>
+        <body>
+            <a href="https://crawler-test.com">Go to Boot.dev</a>
+            <img src="/logo.png" alt="Boot.dev Logo" />
+        </body>
+    </html>`;
+  const result = getURLsFromHTML(inputBody, "https://crawler-test.com");
+  const expected = [
+    "https://crawler-test.com",
+    "https://crawler-test.com/logo.png",
+  ];
+  expect(result).toEqual(expected);
+});
+
+test("should find link from href", () => {
+  const inputBody = `<html>
+    <body>
+        <a href="https://crawler-test.com">Go to Boot.dev</a>
+    </body>
+</html>`;
+  const result = getURLsFromHTML(inputBody, "https://crawler-test.com");
+  const expected = ["https://crawler-test.com"];
+  expect(result).toEqual(expected);
 });
