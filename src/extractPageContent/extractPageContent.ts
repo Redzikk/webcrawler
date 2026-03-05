@@ -31,3 +31,15 @@ export const getURLsFromHTML = (html: string, baseURL: string): string[] => {
   );
   return relativeUrls;
 };
+
+export const getImagesFromHTML = (html: string, baseURL: string): string[] => {
+  if (!html) return [];
+  const dom = new JSDOM(html);
+  const allImages = Array.from(dom.window.document.querySelectorAll("img[src]"))
+    .map((img) => img.getAttribute("src"))
+    .filter((src): src is string => src !== null);
+  const relativeUrls = allImages.map((link) =>
+    link.startsWith(baseURL) ? link : `${baseURL}${link}`,
+  );
+  return relativeUrls;
+};

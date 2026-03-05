@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import {
   getFirstParagraphFromHTML,
   getHeadingFromHTML,
+  getImagesFromHTML,
   getURLsFromHTML,
 } from "./extractPageContent";
 
@@ -66,5 +67,20 @@ test("should find link from href", () => {
 </html>`;
   const result = getURLsFromHTML(inputBody, "https://crawler-test.com");
   const expected = ["https://crawler-test.com"];
+  expect(result).toEqual(expected);
+});
+
+test("should return src links from images", () => {
+  const inputBody = `<html>
+        <body>
+            <img src="https://crawler-test.com/image.png">Go to Boot.dev</img>
+            <img src="/crawler-test/image.png">Go to Boot.dev</img>
+        </body>
+    </html>`;
+  const result = getImagesFromHTML(inputBody, "https://crawler-test.com");
+  const expected = [
+    "https://crawler-test.com/image.png",
+    "https://crawler-test.com/crawler-test/image.png",
+  ];
   expect(result).toEqual(expected);
 });
