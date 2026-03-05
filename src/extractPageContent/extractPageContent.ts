@@ -47,9 +47,15 @@ export const getOutgoingLinks = (html: string, baseURL: string): string[] => {
     .map((a) => a.getAttribute("href"))
     .filter((link) => link !== null);
 
-  const relativeUrls = allOutgoingLinks.map((link) =>
-    link.startsWith(baseURL) ? link : `${baseURL}${link}`,
-  );
+  const relativeUrls = allOutgoingLinks.map((link) => {
+    if (
+      (link.includes("http") || link.includes("https")) &&
+      !link.startsWith(baseURL)
+    ) {
+      return link;
+    }
+    return link.startsWith(baseURL) ? link : `${baseURL}${link}`;
+  });
   return relativeUrls;
 };
 

@@ -1,5 +1,4 @@
-import { fetchHTML } from "./crawl/crawl";
-import extractPageData from "./extractPageContent/extractPageContent";
+import { crawlPage } from "./crawl/crawl";
 
 const main = async () => {
   const url = process.argv[2];
@@ -8,7 +7,7 @@ const main = async () => {
     process.exit(1);
   }
   console.log("===START CRAWLING===");
-  await fetchHTML(url);
+  await crawlPage(url);
   process.exit(0);
 };
 
