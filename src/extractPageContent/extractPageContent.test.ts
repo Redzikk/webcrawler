@@ -53,7 +53,7 @@ test("should return all urls in html", () => {
     </html>`;
   const result = getURLsFromHTML(inputBody, "https://crawler-test.com");
   const expected = [
-    "https://crawler-test.com",
+    "https://crawler-test.com/",
     "https://crawler-test.com/logo.png",
   ];
   expect(result).toEqual(expected);
@@ -66,7 +66,7 @@ test("should find link from href", () => {
     </body>
 </html>`;
   const result = getURLsFromHTML(inputBody, "https://crawler-test.com");
-  const expected = ["https://crawler-test.com"];
+  const expected = ["https://crawler-test.com/"];
   expect(result).toEqual(expected);
 });
 
