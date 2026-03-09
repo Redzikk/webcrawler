@@ -1,4 +1,5 @@
 import { JSDOM } from "jsdom";
+import { normalizeUrl } from "../crawl/crawl";
 
 export type ExtractedPageData = {
   url: string;
@@ -34,10 +35,17 @@ export const getURLsFromHTML = (html: string, baseURL: string): string[] => {
     .map((item) => item.getAttribute("href") ?? item.getAttribute("src"))
     .filter((url): url is string => url !== null);
 
-  const relativeUrls = allLinks.map((link) =>
-    link.startsWith(baseURL) ? link : `${baseURL}${link}`,
-  );
-  return relativeUrls;
+  const absoluteUrls = allLinks
+    .map((link) => {
+      try {
+        return new URL(link, baseURL).href;
+      } catch (err) {
+        return null;
+      }
+    })
+    .filter((url) => url !== null);
+
+  return absoluteUrls;
 };
 
 export const getOutgoingLinks = (html: string, baseURL: string): string[] => {
@@ -47,16 +55,16 @@ export const getOutgoingLinks = (html: string, baseURL: string): string[] => {
     .map((a) => a.getAttribute("href"))
     .filter((link) => link !== null);
 
-  const relativeUrls = allOutgoingLinks.map((link) => {
-    if (
-      (link.includes("http") || link.includes("https")) &&
-      !link.startsWith(baseURL)
-    ) {
-      return link;
-    }
-    return link.startsWith(baseURL) ? link : `${baseURL}${link}`;
-  });
-  return relativeUrls;
+  const absoluteUrls = allOutgoingLinks
+    .map((link) => {
+      try {
+        return new URL(link, baseURL).href;
+      } catch (err) {
+        return null;
+      }
+    })
+    .filter((url) => url !== null);
+  return absoluteUrls;
 };
 
 export const getImagesFromHTML = (html: string, baseURL: string): string[] => {

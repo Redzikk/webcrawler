@@ -1,4 +1,6 @@
 import extractPageData from "../extractPageContent/extractPageContent";
+import ConcurrentCrawler from "./ConcurrentCrawler";
+import pLimit from "p-limit";
 
 function normalizeProtocol(input: string) {
   if (!/^https?:\/\//i.test(input)) {
@@ -32,7 +34,6 @@ export const fetchHTML = async (url: string): Promise<string> => {
       throw new Error("response isn't HTML");
     }
     const html = await res.text();
-    console.log(html);
     return html;
   } catch (err) {
     console.log("ERROR: ", err);
@@ -67,4 +68,19 @@ export const crawlPage = async (
     console.error(err);
   }
   return pages;
+};
+
+export const crawlPageAsync = async (
+  baseURL: string,
+  maxConcurrency: number,
+  maxPages: number,
+) => {
+  const concurrentCrawler = new ConcurrentCrawler(
+    baseURL,
+    {},
+    pLimit(maxConcurrency),
+    maxPages,
+  );
+  const result = await concurrentCrawler.crawl();
+  return result;
 };
