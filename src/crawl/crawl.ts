@@ -22,6 +22,7 @@ export const fetchHTML = async (url: string): Promise<string> => {
     const res = await fetch(url, {
       headers: {
         // add User-Agent to avoid being banned by servers :)
+        "User-Agent": "RedzikCrawler/1.0",
       },
     });
     if (res.status >= 400) {
